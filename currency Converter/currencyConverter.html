@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="currencyConverter.css">
+    <script src="https://kit.fontawesome.com/8800634ec9.js" crossorigin="anonymous"></script>
+    <script>
+        (async function () {
+            console.log('hi server side called');
+            let params = new URL(document.location).searchParams;
+            let to = params.get("to");
+            let from = params.get("from");
+            let amount = parseFloat(params.get("amount"));
+            if (!to || !from) {
+                console.log('from to not found!');
+            }
+            const url = `https://api.frankfurter.app/latest?to=${to},${from}`;
+
+            fetch(url)
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        alert('Not Found')
+                    }
+                })
+                .then(data => {
+                    console.log(data);
+                    const a = Object.values(data?.rates)[0];
+                    let answerSpan = document.getElementById('answer');
+                    answerSpan.innerText = (amount * a).toFixed(2);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        })()
+    </script>
+    <title>Currency Converter</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Currency Converter</h1>
+        <form class="mainForm">
+            <p>Enter Amount</p>
+            <input type="text" name="" id="amount">
+            <div class="fromTo">
+                <div class="ft">
+                    <p>From</p>
+                </div>
+                <div class="ft">
+                    <p>To</p>
+                </div>
+            </div>
+            <div class="flgMain">
+                <div class="flg">
+                    <img class="updateFlag" id="fromFlag" src="https://flagsapi.com/US/flat/64.png">
+                    <select name="from" id="dDown" class="dDown">
+                        <option value="USD" selected>USD</option>
+                    </select>
+                </div>
+                <div class="fl">
+                    <i class="fa-solid fa-right-left"></i>
+                </div>
+                <div class="flg">
+                    <img class="updateFlag" id="toFlag" src="https://flagsapi.com/IN/flat/64.png">
+                    <select name="from" id="dUp" class="dDown">
+                        <option value="IND" selected>IND</option>
+                    </select>
+                </div>
+
+            </div>
+            <button id="btn"> Get Exhange Rates</button>
+        </form>
+        <id id="exchange">
+            <p>The amount will be <span id="answer"></span> </p>
+        </id>
+    </div>
+    <script src="codes.js"></script>
+    <script src="currencyConverter.js"></script>
+</body>
+
+</html>
